@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prod-winapp-vm
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: winapp-vm-prod
+    server: https://kubernetes.default.svc
+  project: winapp-vm
+  source:
+    path: environments/stage
+    repoURL: https://github.com/erkerc/ocpv-winapp.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
