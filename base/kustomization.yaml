@@ -1,4 +1,5 @@
 resources:
-- deployment.yaml
+- sysprep-configmap.yaml
+- winapp-vmpool.yaml
 - service.yaml
 - route.yaml

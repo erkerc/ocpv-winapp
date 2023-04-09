@@ -1,9 +1,33 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: pool.kubevirt.io/v1alpha1
+kind: VirtualMachinePool
 metadata:
-  annotations:
-  labels:
-    app: winappvm
-  name: spring-petclinic
+  name: vm-pool-windows
 spec:
   replicas: 1
+  virtualMachineTemplate:
+    spec:
+      dataVolumeTemplates:
+        - apiVersion: cdi.kubevirt.io/v1beta1
+          kind: DataVolume
+          metadata:
+            name: rootdisk-dv
+          spec:
+            source:
+              pvc:
+                name: windows-base-v20230409
+                namespace: koray
+            storage:
+              resources:
+                requests:
+                  storage: 32Gi
+      template:
+        metadata:
+          labels:
+            kubevirt.io/vmpool: vm-pool-windows
+        spec:
+          domain:
+            cpu:
+              cores: 1
+          resources:
+              requests:
+                memory: 4Gi
