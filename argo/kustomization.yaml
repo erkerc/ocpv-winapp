@@ -1,0 +1,4 @@
+resources:
+- argocd-winapp-project.yaml
+- argocd-app-dev.yaml
+- argocd-app-stage.yaml
