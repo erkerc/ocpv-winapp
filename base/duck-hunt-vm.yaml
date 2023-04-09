@@ -1,0 +1,153 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  app: games-duckhunt-vm
+metadata:
+  annotations:
+    name.os.template.kubevirt.io/fedora: Fedora 35 or higher
+    openshift.io/display-name: Duck Hunt Virtual Machine Template
+    openshift.io/long-description: This template provides a standalone Virtual Machine with a nodejs application [Duck Hunt] created. 
+    openshift.io/provider-display-name: Red Hat Turkey Solution Architect Team
+    iconClass: icon-nodejs
+    tags: 'duckhunt'
+  name: duckhunt-vm-template
+  namespace: openshift
+objects:
+  - apiVersion: kubevirt.io/v1alpha3
+    kind: VirtualMachine
+    metadata:
+      annotations:
+        name.os.template.kubevirt.io/fedora: Fedora 35or higher
+        openshift.io/display-name: duckhunt Virtual Machine 
+      labels:
+        app: duckhunt
+        app.openshift.io/runtime: nodejs
+        version: ${APPLICATION_VERSION}   
+        app.kubernetes.io/part-of: games
+        flavor.template.kubevirt.io/small: 'true'
+        os.template.kubevirt.io/fedora: 'true'
+        kubevirt.io/domain: duckhunt
+        kubevirt.io/size: small
+        workload.template.kubevirt.io/server: 'true'
+        vm.kubevirt.io/name: duckhunt
+      name: duckhunt
+    spec:
+      dataVolumeTemplates:
+      - apiVersion: cdi.kubevirt.io/v1alpha1
+        kind: DataVolume
+        metadata:
+          name: duckhunt-rootdisk
+        spec:
+          pvc:
+            accessModes:
+            - ReadWriteMany
+            resources:
+              requests:
+                storage: 30Gi
+            storageClassName: ocs-storagecluster-ceph-rbd
+            volumeMode: Block
+          sourceRef:
+            kind: DataSource
+            name: ${DATASOURCE_NAME}
+            namespace: ${DATASOURCE_NAMESPACE}
+      running: true
+      template:
+        metadata:
+          annotations:
+            vm.kubevirt.io/flavor: small
+            vm.kubevirt.io/os: fedora
+            vm.kubevirt.io/workload: server
+          labels:
+            flavor.template.kubevirt.io/small: 'true'
+            kubevirt.io/domain: duckhunt
+            kubevirt.io/size: small
+            os.template.kubevirt.io/fedora: 'true'
+            vm.kubevirt.io/name: duckhunt
+            workload.template.kubevirt.io/server: 'true'
+            app: duckhunt
+        spec:
+          domain:
+            cpu:
+              cores: 1
+              sockets: 1
+              threads: 1
+            devices:
+              disks:
+              - bootOrder: 1
+                disk:
+                  bus: virtio
+                name: duckhunt-rootdisk
+              - disk:
+                  bus: virtio
+                name: cloudinitdisk
+              interfaces:
+              - masquerade: {}
+                model: virtio
+                name: nic-0
+              networkInterfaceMultiqueue: true
+              rng: {}
+            machine:
+              type: pc-q35-rhel8.4.0
+            resources:
+              requests:
+                memory: 2Gi
+          evictionStrategy: LiveMigrate
+          hostname: duckhunt
+          networks:
+          - name: nic-0
+            pod: {}
+          terminationGracePeriodSeconds: 180
+          volumes:
+          - dataVolume: 
+              name: duckhunt-rootdisk 
+            name: duckhunt-rootdisk 
+          - cloudInitNoCloud:
+              userData: |-
+                #cloud-config
+                user: ${VM_USER_NAME}
+                password: ${VM_PASSWORD}
+                chpasswd: { expire: False }
+                ssh_authorized_keys: 
+                  - ${SSH_AUTHORIZED_KEYS}
+                runcmd:
+                  - sudo dnf -y install git nodejs
+                  - cd /home/redhat
+                  - git clone https://github.com/erkerc/ossm-games.git
+                  - cd ossm-games/src/duckhunt-vm/
+                  - sudo npm install
+                  - sudo cp duckhunt.service /etc/systemd/system
+                  - sudo systemctl daemon-reload
+                  - sudo systemctl enable --now duckhunt.service
+            name: cloudinitdisk
+parameters:
+- description: The version of the duckhunt application.
+  displayName: duckhunt version
+  name: APPLICATION_VERSION
+  value: v2
+  required: true
+- description: Istio Proxy inject enabled 
+  displayName: Istio Proxy inject enabled 
+  name: ISTIO_INJECT
+  value: 'true'
+  required: true
+- description: Virtual Machine Username
+  displayName: Virtual Machine Username
+  name: VM_USER_NAME
+  required: true
+  value: redhat
+- description: Virtual Machine User Password 
+  name: VM_PASSWORD
+  value: openshift
+  required: true
+- description: SSH Authorized Keys
+  displayName: SSH Authorized Keys
+  name: SSH_AUTHORIZED_KEYS
+  required: false
+- description: Virtual Machine DataSource name 
+  name: DATASOURCE_NAME
+  value: fedora
+  required: true
+- description: Virtual Machine DataSource namespace 
+  name: DATASOURCE_NAMESPACE
+  value: openshift-virtualization-os-images
+  required: true

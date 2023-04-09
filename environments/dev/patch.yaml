@@ -3,9 +3,10 @@ kind: VirtualMachinePool
 metadata:
   name: vm-pool-windows
 spec:
-  replicas: 0
+  replicas: 1
   virtualMachineTemplate:
     spec:
+      runStrategy: Halted
       dataVolumeTemplates:
         - apiVersion: cdi.kubevirt.io/v1beta1
           kind: DataVolume
