@@ -2,12 +2,12 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   labels:
-    app: spring-petclinic
-  name: spring-petclinic
+    app: vm-pool-windows-iis
+  name: vm-pool-windows-iis
 spec:
   port:
-    targetPort: 8080-tcp
+    targetPort: 8080
   to:
     kind: Service
-    name: spring-petclinic
+    name: vm-pool-windows-iis
     weight: 100

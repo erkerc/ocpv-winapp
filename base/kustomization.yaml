@@ -1,5 +1,6 @@
 resources:
 - sysprep-configmap.yaml
 - winapp-vmpool.yaml
-- service.yaml
-- route.yaml
+- winapp-service.yaml
+- winapp-route.yaml
+- winapp-hpa.yaml
