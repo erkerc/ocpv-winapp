@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: winappvm
+  name: spring-petclinic
+spec:
+  replicas: 5
