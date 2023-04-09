@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: dev-winapp-vm
+  namespace: openshift-gitops
 spec:
   destination:
     namespace: winapp-vm-dev
