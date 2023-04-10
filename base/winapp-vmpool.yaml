@@ -34,7 +34,7 @@ spec:
             kubevirt.io/vmpool: vm-pool-windows
         spec:
           livenessProbe:
-            initialDelaySeconds: 120
+            initialDelaySeconds: 240
             periodSeconds: 5
             httpGet:
               port: 8080
@@ -45,8 +45,8 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 20
             timeoutSeconds: 3
-            failureThreshold: 3
-            successThreshold: 3
+            failureThreshold: 6
+            successThreshold: 1
           domain:
             clock:
               timer:
