@@ -12,7 +12,4 @@ spec:
     path: environments/prod
     repoURL: https://github.com/erkerc/ocpv-winapp.git
     targetRevision: HEAD
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+ 
