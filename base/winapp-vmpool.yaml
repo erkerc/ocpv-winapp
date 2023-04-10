@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         kubevirt.io/vmpool: vm-pool-windows
+        app.kubernetes.io/part-of: winapp-vm-pool
     spec:
       runStrategy: RerunOnFailure
       dataVolumeTemplates:
