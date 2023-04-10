@@ -3,7 +3,7 @@ kind: VirtualMachinePool
 metadata:
   name: vm-pool-windows
 spec:
-  replicas: 0
+  replicas: 5
   virtualMachineTemplate:
     spec:
       runStrategy: RerunOnFailure
@@ -28,7 +28,7 @@ spec:
         spec:
           domain:
             cpu:
-              cores: 2
+              cores: 4
             resources:
                 requests:
-                  memory: 6Gi
+                  memory: 8Gi
