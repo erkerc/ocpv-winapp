@@ -3,7 +3,7 @@ kind: VirtualMachinePool
 metadata:
   name: vm-pool-windows
 spec:
-  replicas: 0
+  replicas: 2
   virtualMachineTemplate:
     spec:
       runStrategy: RerunOnFailure
