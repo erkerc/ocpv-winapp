@@ -6,7 +6,7 @@ spec:
   replicas: 8
   virtualMachineTemplate:
     spec:
-      runStrategy: RerunOnFailure
+      runStrategy: Halted
       dataVolumeTemplates:
         - apiVersion: cdi.kubevirt.io/v1beta1
           kind: DataVolume
